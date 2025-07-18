@@ -5,6 +5,26 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.0] - 2025-01-29
+
+### Added
+- 💾 **Backup System** - Complete backup functionality for `b_iblock_element` table
+- 🔄 **Data Restoration** - Restore data from backups (full table or specific iblocks)
+- 📋 **Backup Management** - List, create, and delete backups via CLI and web interface
+- ⚡ **Automatic Backups** - Option to create backup before fix operations
+- 🏷️ **Named Backups** - Create custom-named backups for easy identification
+- 📊 **Backup Statistics** - View backup size, record count, and date information
+
+### Enhanced
+- 🖥️ **Web Interface** - Added backup management section to admin panel
+- 💻 **CLI Commands** - New backup commands: `backup`, `backup-list`, `restore`, `backup-delete`
+- 🔧 **Fix Operations** - Added `--backup` option to create backup before fixing
+- 📚 **Documentation** - Updated README and examples with backup functionality
+
+### Security
+- 🛡️ **Safe Operations** - All backup operations include confirmation prompts
+- 🔒 **Validation** - Backup name validation and existence checks
+
 ## [1.0.0] - 2025-01-29
 
 ### Added

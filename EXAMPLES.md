@@ -5,6 +5,7 @@
 ## 📋 Оглавление
 
 - [Базовые операции](#базовые-операции)
+- [Работа с бекапами](#работа-с-бекапами)
 - [Автоматизация через CLI](#автоматизация-через-cli)
 - [Программное использование](#программное-использование)
 - [Мониторинг и диагностика](#мониторинг-и-диагностика)
@@ -43,6 +44,79 @@ php local/modules/bitrix.sortfix/cli/sort_fix.php check 3
 
 # Исправить сортировку
 echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix 3
+```
+
+## Работа с бекапами
+
+### Создание и управление бекапами
+
+```bash
+# Создать бекап всей таблицы
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup
+
+# Создать бекап конкретного инфоблока
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384
+
+# Создать именованный бекап для важных изменений
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384 before_migration
+
+# Просмотр всех доступных бекапов
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup-list
+```
+
+**Пример вывода списка бекапов:**
+```
+=== СПИСОК БЕКАПОВ ===
+
+Имя бекапа                              Записей  Размер МБ Старейшая запись     Новейшая запись
+----------------------------------------------------------------------------------------------------------------------
+b_iblock_element_backup_2025_01_29_14_30_15 1542    45.67     2024-01-15 10:30:25  2025-01-29 14:25:10
+b_iblock_element_backup_before_migration     890     23.45     2024-01-15 10:30:25  2025-01-29 12:15:30
+```
+
+### Безопасное исправление с бекапом
+
+```bash
+# Исправить все элементы с автоматическим созданием бекапа
+echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+
+# Исправить конкретный инфоблок с бекапом
+echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix 384 --backup
+```
+
+### Восстановление данных
+
+```bash
+# Восстановить всю таблицу из бекапа
+echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name
+
+# Восстановить только конкретный инфоблок
+echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name 384
+```
+
+### Очистка старых бекапов
+
+```bash
+# Удалить конкретный бекап
+echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php backup-delete old_backup_name
+```
+
+### Сценарий производственного обновления
+
+```bash
+#!/bin/bash
+
+# Создаем бекап перед обновлением
+echo "Создание бекапа перед обновлением..."
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup "" "before_update_$(date +%Y%m%d_%H%M%S)"
+
+# Проверяем текущее состояние
+php local/modules/bitrix.sortfix/cli/sort_fix.php check
+
+# Выполняем исправление с подтверждением
+echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+
+echo "Обновление завершено успешно!"
 ```
 
 ## Автоматизация через CLI
@@ -120,14 +194,19 @@ function checkAndFixSortOnAdd(&$arFields)
             "SORTFIX_AUTO"
         );
         
-        // Исправляем
-        $result = $sortFixService->fixElementsSort($iblockId);
+        // Создаем бекап перед исправлением
+        $backupResult = $sortFixService->createBackup($iblockId, "auto_fix_" . date('Y_m_d_H_i_s'));
         
-        if ($result['success']) {
-            AddMessage2Log(
-                "Исправлено {$result['updated_count']} элементов в инфоблоке {$iblockId}",
-                "SORTFIX_AUTO"
-            );
+        if ($backupResult['success']) {
+            // Исправляем
+            $result = $sortFixService->fixElementsSort($iblockId);
+            
+            if ($result['success']) {
+                AddMessage2Log(
+                    "Исправлено {$result['updated_count']} элементов в инфоблоке {$iblockId}. Бекап: {$backupResult['backup_name']}",
+                    "SORTFIX_AUTO"
+                );
+            }
         }
     }
 }
@@ -199,6 +278,111 @@ class SortFixController extends Controller
         return $sortFixService->fixElementsSort($iblockId);
     }
 }
+```
+
+### Программная работа с бекапами
+
+```php
+<?php
+// Пример класса для управления бекапами
+
+use Bitrix\Main\Loader;
+use Bitrix\SortFix\Services\SortFixService;
+
+class SortFixBackupManager
+{
+    private $sortFixService;
+    
+    public function __construct()
+    {
+        if (!Loader::includeModule('bitrix.sortfix')) {
+            throw new Exception('Module bitrix.sortfix not installed');
+        }
+        
+        $this->sortFixService = new SortFixService();
+    }
+    
+    /**
+     * Создать бекап перед критическими операциями
+     */
+    public function createPreOperationBackup($operation, $iblockId = null)
+    {
+        $backupName = "before_{$operation}_" . date('Y_m_d_H_i_s');
+        
+        $result = $this->sortFixService->createBackup($iblockId, $backupName);
+        
+        if ($result['success']) {
+            AddMessage2Log(
+                "Создан бекап {$result['backup_name']} перед операцией {$operation}",
+                "SORTFIX_BACKUP"
+            );
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Безопасное исправление с автоматическим бекапом
+     */
+    public function safeFixSort($iblockId = null)
+    {
+        // Создаем бекап
+        $backupResult = $this->createPreOperationBackup('sortfix', $iblockId);
+        
+        if (!$backupResult['success']) {
+            return [
+                'success' => false,
+                'message' => 'Не удалось создать бекап: ' . $backupResult['message']
+            ];
+        }
+        
+        // Выполняем исправление
+        $fixResult = $this->sortFixService->fixElementsSort($iblockId);
+        
+        if (!$fixResult['success']) {
+            // При ошибке можно автоматически восстановить
+            $this->sortFixService->restoreFromBackup($backupResult['backup_name'], $iblockId);
+        }
+        
+        return $fixResult;
+    }
+    
+    /**
+     * Очистка старых бекапов (старше 30 дней)
+     */
+    public function cleanupOldBackups($daysOld = 30)
+    {
+        $backupsResult = $this->sortFixService->listBackups();
+        
+        if (!$backupsResult['success']) {
+            return;
+        }
+        
+        $cutoffDate = date('Y-m-d H:i:s', strtotime("-{$daysOld} days"));
+        
+        foreach ($backupsResult['backups'] as $backup) {
+            if ($backup['newest_record'] < $cutoffDate) {
+                $deleteResult = $this->sortFixService->deleteBackup($backup['name']);
+                
+                if ($deleteResult['success']) {
+                    AddMessage2Log(
+                        "Удален старый бекап: {$backup['name']}",
+                        "SORTFIX_CLEANUP"
+                    );
+                }
+            }
+        }
+    }
+}
+
+// Использование в коде
+$backupManager = new SortFixBackupManager();
+
+// Безопасное исправление
+$result = $backupManager->safeFixSort(384);
+
+// Очистка старых бекапов
+$backupManager->cleanupOldBackups(7); // удалить бекапы старше 7 дней
 ```
 
 ## Мониторинг и диагностика

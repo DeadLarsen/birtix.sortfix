@@ -31,18 +31,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
         switch ($action) {
             case 'fix_all':
-                $result = $sortFixService->fixElementsSort();
-                $message = $result['message'];
+                $createBackup = !empty($_POST['create_backup']);
+                $result = $sortFixService->fixElementsSort(null, $createBackup);
+                if ($result['success'] && isset($result['backup_created']) && $result['backup_created']) {
+                    $message = $result['message'] . ' Создан бекап: ' . $result['backup_name'];
+                } else {
+                    $message = $result['message'];
+                }
                 $messageType = $result['success'] ? 'OK' : 'ERROR';
                 break;
                 
             case 'fix_iblock':
                 if ($iblockId) {
-                    $result = $sortFixService->fixElementsSort($iblockId);
-                    $message = $result['message'];
+                    $createBackup = !empty($_POST['create_backup']);
+                    $result = $sortFixService->fixElementsSort($iblockId, $createBackup);
+                    if ($result['success'] && isset($result['backup_created']) && $result['backup_created']) {
+                        $message = $result['message'] . ' Создан бекап: ' . $result['backup_name'];
+                    } else {
+                        $message = $result['message'];
+                    }
                     $messageType = $result['success'] ? 'OK' : 'ERROR';
                 } else {
                     $message = 'Не указан ID инфоблока';
+                    $messageType = 'ERROR';
+                }
+                break;
+                
+            case 'create_backup':
+                $backupName = !empty($_POST['backup_name']) ? $_POST['backup_name'] : null;
+                $result = $sortFixService->createBackup($iblockId, $backupName);
+                $message = $result['message'];
+                if ($result['success']) {
+                    $message .= ' Имя: ' . $result['backup_name'] . ', записей: ' . $result['records_count'];
+                }
+                $messageType = $result['success'] ? 'OK' : 'ERROR';
+                break;
+                
+            case 'restore_backup':
+                $backupName = $_POST['backup_name'] ?? '';
+                if ($backupName) {
+                    $result = $sortFixService->restoreFromBackup($backupName, $iblockId);
+                    $message = $result['message'];
+                    $messageType = $result['success'] ? 'OK' : 'ERROR';
+                } else {
+                    $message = 'Не указано имя бекапа';
+                    $messageType = 'ERROR';
+                }
+                break;
+                
+            case 'delete_backup':
+                $backupName = $_POST['backup_name'] ?? '';
+                if ($backupName) {
+                    $result = $sortFixService->deleteBackup($backupName);
+                    $message = $result['message'];
+                    $messageType = $result['success'] ? 'OK' : 'ERROR';
+                } else {
+                    $message = 'Не указано имя бекапа';
                     $messageType = 'ERROR';
                 }
                 break;
@@ -56,6 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 // Получаем статистику
 $stats = $sortFixService->getElementsStats();
 $needsFixing = $sortFixService->checkSortNeedsFixing();
+$backups = $sortFixService->listBackups();
 
 $APPLICATION->SetTitle("Исправление сортировки элементов инфоблоков");
 
@@ -119,6 +164,17 @@ if ($message) {
     padding: 15px;
     margin-bottom: 20px;
 }
+
+.adm-btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: white !important;
+}
+
+.adm-btn-danger:hover {
+    background-color: #c82333 !important;
+    border-color: #bd2130 !important;
+}
 </style>
 
 <div class="sort-fix-container">
@@ -166,9 +222,14 @@ if ($message) {
                                         <?= bitrix_sessid_post() ?>
                                         <input type="hidden" name="action" value="fix_iblock">
                                         <input type="hidden" name="iblock_id" value="<?= $iblock['id'] ?>">
-                                        <input type="submit" class="adm-btn adm-btn-save" 
-                                               value="Исправить" 
-                                               onclick="return confirm('Исправить сортировку для инфоблока \"<?= htmlspecialchars($iblock['name']) ?>\"?')">
+                                        <div style="white-space: nowrap;">
+                                            <label style="font-size: 11px; margin-right: 5px;">
+                                                <input type="checkbox" name="create_backup" value="1" checked> Создать бекап
+                                            </label><br>
+                                            <input type="submit" class="adm-btn adm-btn-save" 
+                                                   value="Исправить" 
+                                                   onclick="return confirm('Исправить сортировку для инфоблока \"<?= htmlspecialchars($iblock['name']) ?>\"?')">
+                                        </div>
                                     </form>
                                 </td>
                             </tr>
@@ -213,9 +274,14 @@ if ($message) {
                             <?= bitrix_sessid_post() ?>
                             <input type="hidden" name="action" value="fix_iblock">
                             <input type="hidden" name="iblock_id" value="<?= $iblock['IBLOCK_ID'] ?>">
-                            <input type="submit" class="adm-btn adm-btn-save" 
-                                   value="Исправить" 
-                                   onclick="return confirm('Исправить сортировку для инфоблока \"<?= htmlspecialchars($iblock['IBLOCK_NAME']) ?>\"?')">
+                            <div style="white-space: nowrap;">
+                                <label style="font-size: 11px; margin-right: 5px;">
+                                    <input type="checkbox" name="create_backup" value="1" checked> Создать бекап
+                                </label><br>
+                                <input type="submit" class="adm-btn adm-btn-save" 
+                                       value="Исправить" 
+                                       onclick="return confirm('Исправить сортировку для инфоблока \"<?= htmlspecialchars($iblock['IBLOCK_NAME']) ?>\"?')">
+                            </div>
                         </form>
                     </td>
                 </tr>
@@ -227,6 +293,11 @@ if ($message) {
         <form method="post" style="display: inline;">
             <?= bitrix_sessid_post() ?>
             <input type="hidden" name="action" value="fix_all">
+            <div style="margin-bottom: 10px;">
+                <label>
+                    <input type="checkbox" name="create_backup" value="1" checked> Создать бекап перед исправлением
+                </label>
+            </div>
             <input type="submit" class="adm-btn adm-btn-save" 
                    value="Исправить сортировку всех элементов" 
                    onclick="return confirm('Исправить сортировку для ВСЕХ элементов в системе?\\nЭто действие затронет <?= $stats['total_elements'] ?> элементов.')">
@@ -234,6 +305,71 @@ if ($message) {
         
         <input type="button" class="adm-btn" value="Обновить страницу" onclick="window.location.reload()">
     </div>
+    
+    <h3>Управление бекапами</h3>
+    
+    <div style="margin-bottom: 20px; background: #f8f9fa; padding: 15px; border-radius: 4px;">
+        <h4>Создать новый бекап</h4>
+        <form method="post" style="display: inline-block; margin-right: 20px;">
+            <?= bitrix_sessid_post() ?>
+            <input type="hidden" name="action" value="create_backup">
+            <div style="margin-bottom: 10px;">
+                <label>ID инфоблока (оставьте пустым для бекапа всей таблицы):</label><br>
+                <input type="number" name="iblock_id" placeholder="Например: 384" style="width: 150px; margin-right: 10px;">
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label>Пользовательское имя (необязательно):</label><br>
+                <input type="text" name="backup_name" placeholder="Например: before_fix" style="width: 200px; margin-right: 10px;">
+            </div>
+            <input type="submit" class="adm-btn adm-btn-save" value="Создать бекап">
+        </form>
+    </div>
+    
+    <?php if ($backups['success'] && !empty($backups['backups'])): ?>
+        <h4>Доступные бекапы</h4>
+        <table class="stats-table">
+            <thead>
+                <tr>
+                    <th>Имя бекапа</th>
+                    <th>Записей</th>
+                    <th>Размер (МБ)</th>
+                    <th>Старейшая запись</th>
+                    <th>Новейшая запись</th>
+                    <th>Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($backups['backups'] as $backup): ?>
+                    <tr>
+                        <td style="font-family: monospace;"><?= htmlspecialchars($backup['name']) ?></td>
+                        <td><?= $backup['records_count'] ?></td>
+                        <td><?= $backup['size_mb'] ?></td>
+                        <td><?= $backup['oldest_record'] ?: 'N/A' ?></td>
+                        <td><?= $backup['newest_record'] ?: 'N/A' ?></td>
+                        <td>
+                            <form method="post" style="display: inline; margin-right: 5px;">
+                                <?= bitrix_sessid_post() ?>
+                                <input type="hidden" name="action" value="restore_backup">
+                                <input type="hidden" name="backup_name" value="<?= htmlspecialchars($backup['name']) ?>">
+                                <input type="submit" class="adm-btn" value="Восстановить" 
+                                       onclick="return confirm('Восстановить всю таблицу из бекапа «<?= htmlspecialchars($backup['name']) ?>»?\\nЭто УДАЛИТ все текущие данные!')">
+                            </form>
+                            
+                            <form method="post" style="display: inline; margin-right: 5px;">
+                                <?= bitrix_sessid_post() ?>
+                                <input type="hidden" name="action" value="delete_backup">
+                                <input type="hidden" name="backup_name" value="<?= htmlspecialchars($backup['name']) ?>">
+                                <input type="submit" class="adm-btn adm-btn-danger" value="Удалить" 
+                                       onclick="return confirm('Удалить бекап «<?= htmlspecialchars($backup['name']) ?>»?\\nЭто действие необратимо!')">
+                            </form>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    <?php else: ?>
+        <p><em>Бекапы не найдены</em></p>
+    <?php endif; ?>
     
     <h3>Описание</h3>
     <p>
@@ -244,7 +380,7 @@ if ($message) {
         <li>Поле SORT обновляется с шагом 100: первый элемент SORT = 100, следующий SORT = 200, и т.д.</li>
     </ol>
     <p>
-        <strong>Внимание:</strong> Операция изменяет данные в базе. Рекомендуется создать резервную копию перед выполнением.
+        <strong>Рекомендация:</strong> Всегда создавайте бекап перед исправлением сортировки. Это позволит восстановить данные в случае необходимости.
     </p>
 </div>
 

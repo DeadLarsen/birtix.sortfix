@@ -8,18 +8,296 @@ use Bitrix\Main\Application;
 class SortFixService
 {
     private const SORT_STEP = 100;
+    private const BACKUP_PREFIX = 'b_iblock_element_backup_';
+    
+    /**
+     * Создает бекап таблицы b_iblock_element
+     * 
+     * @param int|null $iblockId Если указан, то бекап только элементов конкретного инфоблока
+     * @param string|null $customName Пользовательское имя бекапа
+     * @return array Результат создания бекапа
+     */
+    public function createBackup(?int $iblockId = null, ?string $customName = null): array
+    {
+        $connection = Application::getConnection();
+        
+        try {
+            // Генерируем имя таблицы бекапа
+            $timestamp = date('Y_m_d_H_i_s');
+            $iblockSuffix = $iblockId ? "_iblock_{$iblockId}" : "";
+            $backupTableName = self::BACKUP_PREFIX . $timestamp . $iblockSuffix;
+            
+            if ($customName) {
+                $backupTableName = self::BACKUP_PREFIX . $customName;
+            }
+            
+            // Проверяем, что таблица с таким именем не существует
+            if ($this->tableExists($backupTableName)) {
+                return [
+                    'success' => false,
+                    'message' => "Таблица {$backupTableName} уже существует"
+                ];
+            }
+            
+            // Создаем структуру таблицы бекапа
+            $createTableQuery = "
+                CREATE TABLE `{$backupTableName}` LIKE `b_iblock_element`
+            ";
+            $connection->query($createTableQuery);
+            
+            // Копируем данные
+            $whereClause = $iblockId ? "WHERE IBLOCK_ID = {$iblockId}" : "";
+            $insertQuery = "
+                INSERT INTO `{$backupTableName}` 
+                SELECT * FROM `b_iblock_element` {$whereClause}
+            ";
+            $connection->query($insertQuery);
+            
+            // Получаем количество скопированных записей
+            $countQuery = "SELECT COUNT(*) as cnt FROM `{$backupTableName}`";
+            $countResult = $connection->query($countQuery);
+            $count = $countResult->fetch()['cnt'];
+            
+            return [
+                'success' => true,
+                'message' => "Бекап создан успешно",
+                'backup_name' => $backupTableName,
+                'records_count' => $count,
+                'iblock_id' => $iblockId
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Ошибка при создании бекапа: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Получает список доступных бекапов
+     * 
+     * @return array
+     */
+    public function listBackups(): array
+    {
+        $connection = Application::getConnection();
+        
+        try {
+            $query = "
+                SHOW TABLES LIKE '" . self::BACKUP_PREFIX . "%'
+            ";
+            $result = $connection->query($query);
+            $tables = $result->fetchAll();
+            
+            $backups = [];
+            foreach ($tables as $table) {
+                $tableName = array_values($table)[0];
+                
+                // Получаем информацию о таблице
+                $infoQuery = "
+                    SELECT 
+                        COUNT(*) as records_count,
+                        MIN(TIMESTAMP_X) as oldest_record,
+                        MAX(TIMESTAMP_X) as newest_record
+                    FROM `{$tableName}`
+                ";
+                $infoResult = $connection->query($infoQuery);
+                $info = $infoResult->fetch();
+                
+                // Получаем размер таблицы
+                $sizeQuery = "
+                    SELECT 
+                        ROUND(((data_length + index_length) / 1024 / 1024), 2) AS size_mb
+                    FROM information_schema.TABLES 
+                    WHERE table_schema = DATABASE() AND table_name = '{$tableName}'
+                ";
+                $sizeResult = $connection->query($sizeQuery);
+                $size = $sizeResult->fetch()['size_mb'];
+                
+                $backups[] = [
+                    'name' => $tableName,
+                    'records_count' => $info['records_count'],
+                    'size_mb' => $size,
+                    'oldest_record' => $info['oldest_record'],
+                    'newest_record' => $info['newest_record']
+                ];
+            }
+            
+            // Сортируем по дате создания (по имени таблицы)
+            usort($backups, function($a, $b) {
+                return strcmp($b['name'], $a['name']);
+            });
+            
+            return [
+                'success' => true,
+                'backups' => $backups
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Ошибка при получении списка бекапов: ' . $e->getMessage(),
+                'backups' => []
+            ];
+        }
+    }
+    
+    /**
+     * Восстанавливает данные из бекапа
+     * 
+     * @param string $backupName Имя таблицы бекапа
+     * @param int|null $iblockId Если указан, то восстанавливает только элементы конкретного инфоблока
+     * @return array
+     */
+    public function restoreFromBackup(string $backupName, ?int $iblockId = null): array
+    {
+        $connection = Application::getConnection();
+        
+        try {
+            // Проверяем, что таблица бекапа существует
+            if (!$this->tableExists($backupName)) {
+                return [
+                    'success' => false,
+                    'message' => "Таблица бекапа {$backupName} не существует"
+                ];
+            }
+            
+            $connection->startTransaction();
+            
+            // Если указан конкретный инфоблок, удаляем только его элементы
+            if ($iblockId) {
+                $deleteQuery = "DELETE FROM b_iblock_element WHERE IBLOCK_ID = {$iblockId}";
+                $connection->query($deleteQuery);
+                
+                $insertQuery = "
+                    INSERT INTO b_iblock_element 
+                    SELECT * FROM `{$backupName}` WHERE IBLOCK_ID = {$iblockId}
+                ";
+            } else {
+                // Полная замена таблицы
+                $deleteQuery = "DELETE FROM b_iblock_element";
+                $connection->query($deleteQuery);
+                
+                $insertQuery = "
+                    INSERT INTO b_iblock_element 
+                    SELECT * FROM `{$backupName}`
+                ";
+            }
+            
+            $connection->query($insertQuery);
+            
+            // Получаем количество восстановленных записей
+            $whereClause = $iblockId ? "WHERE IBLOCK_ID = {$iblockId}" : "";
+            $countQuery = "SELECT COUNT(*) as cnt FROM b_iblock_element {$whereClause}";
+            $countResult = $connection->query($countQuery);
+            $count = $countResult->fetch()['cnt'];
+            
+            $connection->commitTransaction();
+            
+            return [
+                'success' => true,
+                'message' => "Данные восстановлены из бекапа {$backupName}",
+                'restored_count' => $count,
+                'iblock_id' => $iblockId
+            ];
+            
+        } catch (\Exception $e) {
+            $connection->rollbackTransaction();
+            
+            return [
+                'success' => false,
+                'message' => 'Ошибка при восстановлении из бекапа: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Удаляет таблицу бекапа
+     * 
+     * @param string $backupName
+     * @return array
+     */
+    public function deleteBackup(string $backupName): array
+    {
+        $connection = Application::getConnection();
+        
+        try {
+            // Проверяем, что это действительно таблица бекапа
+            if (strpos($backupName, self::BACKUP_PREFIX) !== 0) {
+                return [
+                    'success' => false,
+                    'message' => 'Недопустимое имя таблицы бекапа'
+                ];
+            }
+            
+            if (!$this->tableExists($backupName)) {
+                return [
+                    'success' => false,
+                    'message' => "Таблица бекапа {$backupName} не существует"
+                ];
+            }
+            
+            $dropQuery = "DROP TABLE `{$backupName}`";
+            $connection->query($dropQuery);
+            
+            return [
+                'success' => true,
+                'message' => "Бекап {$backupName} удален"
+            ];
+            
+        } catch (\Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Ошибка при удалении бекапа: ' . $e->getMessage()
+            ];
+        }
+    }
+    
+    /**
+     * Проверяет существование таблицы
+     * 
+     * @param string $tableName
+     * @return bool
+     */
+    private function tableExists(string $tableName): bool
+    {
+        $connection = Application::getConnection();
+        
+        try {
+            $query = "SHOW TABLES LIKE '{$tableName}'";
+            $result = $connection->query($query);
+            return $result->getSelectedRowsCount() > 0;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
     
     /**
      * Исправляет поле SORT в таблице b_iblock_element
      * 
      * @param int|null $iblockId Если указан, то исправляет только элементы конкретного инфоблока
+     * @param bool $createBackup Создавать ли бекап перед исправлением
+     * @param string|null $backupName Пользовательское имя бекапа
      * @return array Результат выполнения операции
      */
-    public function fixElementsSort(?int $iblockId = null): array
+    public function fixElementsSort(?int $iblockId = null, bool $createBackup = false, ?string $backupName = null): array
     {
         $connection = Application::getConnection();
         
         try {
+            // Создаем бекап при необходимости
+            if ($createBackup) {
+                $backupResult = $this->createBackup($iblockId, $backupName);
+                if (!$backupResult['success']) {
+                    return [
+                        'success' => false,
+                        'message' => 'Ошибка при создании бекапа: ' . $backupResult['message'],
+                        'updated_count' => 0
+                    ];
+                }
+            }
+            
             // Начинаем транзакцию
             $connection->startTransaction();
             
@@ -64,12 +342,21 @@ class SortFixService
             // Подтверждаем транзакцию
             $connection->commitTransaction();
             
-            return [
+            $result = [
                 'success' => true,
                 'message' => "Успешно обновлено {$updatedCount} элементов",
                 'updated_count' => $updatedCount,
                 'iblock_id' => $iblockId
             ];
+            
+            // Добавляем информацию о бекапе, если он был создан
+            if ($createBackup && isset($backupResult)) {
+                $result['backup_created'] = true;
+                $result['backup_name'] = $backupResult['backup_name'];
+                $result['backup_records'] = $backupResult['records_count'];
+            }
+            
+            return $result;
             
         } catch (\Exception $e) {
             $connection->rollbackTransaction();
