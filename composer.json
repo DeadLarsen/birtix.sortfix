@@ -1,0 +1,61 @@
+{
+    "name": "bitrix/sortfix",
+    "description": "1C-Bitrix module for fixing SORT field in iblock elements with 100-step algorithm",
+    "type": "bitrix-module",
+    "keywords": [
+        "bitrix",
+        "module",
+        "sort",
+        "iblock",
+        "elements",
+        "fix",
+        "cms"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bitrix Community",
+            "email": "community@bitrix.ru",
+            "role": "Developer"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/bitrix/sortfix/issues",
+        "source": "https://github.com/bitrix/sortfix"
+    },
+    "require": {
+        "php": ">=7.4.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0|^10.0|^11.0",
+        "squizlabs/php_codesniffer": "^3.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Bitrix\\SortFix\\": "lib/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Bitrix\\SortFix\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "bitrix-module": {
+            "name": "bitrix.sortfix",
+            "description": "Sort Fix Module",
+            "version": "1.0.0"
+        }
+    },
+    "scripts": {
+        "test": "phpunit",
+        "cs-check": "phpcs --standard=PSR12 lib/ cli/",
+        "cs-fix": "phpcbf --standard=PSR12 lib/ cli/"
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+} 

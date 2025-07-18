@@ -1,0 +1,45 @@
+# IDE and editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# PHP
+vendor/
+composer.lock
+*.log
+
+# Bitrix specific
+bitrix/
+upload/
+.access.php
+dbconn.php
+
+# Cache and temporary files
+*.tmp
+*.temp
+cache/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# Testing
+phpunit.xml
+.phpunit.result.cache
+tests/_output/
+tests/_support/_generated/
+
+# Documentation build
+docs/_build/ 
