@@ -7,6 +7,8 @@
 
 🔧 **Профессиональный модуль для исправления поля SORT в элементах инфоблоков 1C-Bitrix**
 
+Работает пока только с инфоблоками 1.0
+
 Модуль `bitrix.sortfix` предназначен для исправления поля SORT в таблице `b_iblock_element` в системе 1C-Bitrix с помощью эффективного алгоритма с шагом 100.
 
 ## ✨ Особенности
@@ -18,6 +20,8 @@
 - ⚡ **CLI команды** - автоматизация через командную строку
 - 📊 **Детальная аналитика** - полная статистика по инфоблокам
 - 🔍 **Интеллектуальная диагностика** - обнаружение проблем с сортировкой
+- 💾 **Система бекапов** - автоматическое создание резервных копий
+- 🔄 **Восстановление данных** - быстрое восстановление из бекапов
 
 ## 🚀 Быстрый старт
 
@@ -151,6 +155,35 @@ php local/modules/bitrix.sortfix/cli/sort_fix.php fix
 php local/modules/bitrix.sortfix/cli/sort_fix.php fix 384
 ```
 
+#### Управление бекапами:
+
+```bash
+# Создать бекап всей таблицы
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup
+
+# Создать бекап конкретного инфоблока
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384
+
+# Создать именованный бекап
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384 my_backup
+
+# Показать список бекапов
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup-list
+
+# Восстановить из бекапа (всю таблицу)
+php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name
+
+# Восстановить из бекапа (только конкретный инфоблок)
+php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name 384
+
+# Удалить бекап
+php local/modules/bitrix.sortfix/cli/sort_fix.php backup-delete backup_name
+
+# Исправить сортировку с созданием бекапа
+php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+php local/modules/bitrix.sortfix/cli/sort_fix.php fix 384 --backup
+```
+
 #### Показать справку:
 ```bash
 php local/modules/bitrix.sortfix/cli/sort_fix.php help
@@ -176,6 +209,32 @@ if (Loader::includeModule('bitrix.sortfix')) {
     
     // Исправить сортировку конкретного инфоблока
     $result = $sortFixService->fixElementsSort(384);
+    
+    // Создать бекап перед исправлением
+    $result = $sortFixService->fixElementsSort(null, true); // с бекапом
+    
+    // Работа с бекапами
+    
+    // Создать бекап всей таблицы
+    $backupResult = $sortFixService->createBackup();
+    
+    // Создать бекап конкретного инфоблока
+    $backupResult = $sortFixService->createBackup(384);
+    
+    // Создать именованный бекап
+    $backupResult = $sortFixService->createBackup(384, 'my_backup');
+    
+    // Получить список бекапов
+    $backups = $sortFixService->listBackups();
+    
+    // Восстановить из бекапа
+    $restoreResult = $sortFixService->restoreFromBackup('backup_name');
+    
+    // Восстановить только конкретный инфоблок
+    $restoreResult = $sortFixService->restoreFromBackup('backup_name', 384);
+    
+    // Удалить бекап
+    $deleteResult = $sortFixService->deleteBackup('backup_name');
 }
 ```
 
