@@ -263,6 +263,136 @@ git push origin main --tags
 - Обновление зависимостей
 - Мониторинг производительности
 
+## 📦 Публикация на Packagist
+
+### 1. Подготовка composer.json
+
+Убедитесь, что composer.json содержит корректную информацию:
+
+```bash
+# Проверить синтаксис
+composer validate
+
+# Проверить автозагрузку
+composer dump-autoload
+```
+
+### 2. Регистрация на Packagist
+
+1. Зайти на [Packagist.org](https://packagist.org)
+2. Войти через GitHub аккаунт
+3. Нажать "Submit Package"
+4. Указать URL репозитория: `https://github.com/your-username/sortfix`
+5. Нажать "Check"
+
+### 3. Настройка автообновления
+
+1. В настройках GitHub репозитория перейти в "Settings" → "Webhooks"
+2. Добавить webhook от Packagist (будет предложен автоматически)
+3. Payload URL: `https://packagist.org/api/github`
+4. Content type: `application/json`
+5. События: Just the push event
+
+### 4. Создание релиза
+
+```bash
+# Создать git tag
+git tag -a v1.1.0 -m "Release v1.1.0 - Added backup functionality"
+
+# Отправить tag в репозиторий
+git push origin v1.1.0
+```
+
+На GitHub создать Release:
+1. Перейти в "Releases" → "Create a new release"
+2. Выбрать tag v1.1.0
+3. Заголовок: "v1.1.0 - Backup functionality added"
+4. Описание скопировать из CHANGELOG.md
+5. Опубликовать релиз
+
+### 5. Проверка установки
+
+После публикации протестировать установку:
+
+```bash
+# Создать тестовый проект
+mkdir test-install && cd test-install
+composer init --no-interaction
+
+# Установить пакет
+composer require bitrix/sortfix
+
+# Проверить установку
+ls -la vendor/bitrix/sortfix/
+```
+
+### 6. Обновление документации
+
+После успешной публикации обновить:
+
+- README.md - добавить badge Packagist
+- INSTALL.md - проверить инструкции
+- Создать пример установки в Docker
+
+```markdown
+[![Packagist Version](https://img.shields.io/packagist/v/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
+```
+
+## 🔄 Автоматизация выпусков
+
+### GitHub Actions для автоматической публикации
+
+Создать `.github/workflows/release.yml`:
+
+```yaml
+name: Auto Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Create Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: ./CHANGELOG.md
+          draft: false
+          prerelease: false
+
+      - name: Notify Packagist
+        run: |
+          curl -XPOST -H'content-type:application/json' \
+               'https://packagist.org/api/update-package?username=YOUR_USERNAME&apiToken=${{ secrets.PACKAGIST_TOKEN }}' \
+               -d'{"repository":{"url":"https://github.com/your-username/sortfix"}}'
+```
+
+### Composer команды для разработки
+
+```bash
+# Валидация пакета
+composer validate --strict
+
+# Анализ безопасности
+composer audit
+
+# Обновление зависимостей
+composer update --dry-run
+
+# Проверка автозагрузки
+composer dump-autoload --optimize
+```
+
 ## 📈 Метрики успеха
 
 Отслеживать:
@@ -278,6 +408,14 @@ git push origin main --tags
 - 0 критических багов
 - 2-3 контрибьютора
 
+**Цели первого квартала:**
+- 50+ звезд на GitHub
+- 1000+ установок через Composer
+- Стабильная версия 2.0
+- 5+ активных контрибьюторов
+
 ---
 
-**Готово к публикации! 🚀** 
+**Готово к публикации! 🚀**
+
+Модуль готов к публикации на GitHub и Packagist. После выполнения всех шагов пользователи смогут устанавливать модуль простой командой `composer require bitrix/sortfix`. 

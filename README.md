@@ -3,6 +3,8 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-blue.svg)](https://www.php.net)
 [![1C-Bitrix](https://img.shields.io/badge/1C--Bitrix-Compatible-green.svg)](https://www.1c-bitrix.ru)
+[![Packagist Version](https://img.shields.io/packagist/v/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🔧 **Профессиональный модуль для исправления поля SORT в элементах инфоблоков 1C-Bitrix**
@@ -25,17 +27,21 @@
 
 ## 🚀 Быстрый старт
 
-### Установка через Composer
+### Установка через Composer (рекомендуется)
 
 ```bash
 composer require bitrix/sortfix
 ```
 
-### Установка в 1C-Bitrix проект
+Модуль автоматически будет установлен в `local/modules/bitrix.sortfix/` и зарегистрирован в системе.
 
-1. Скопируйте модуль в `local/modules/bitrix.sortfix/`
+### Ручная установка
+
+1. Скачайте модуль в `local/modules/bitrix.sortfix/`
 2. Установите через админ-панель или выполните миграцию
 3. Откройте **Настройки → Исправление сортировки**
+
+Подробные инструкции: [INSTALL.md](INSTALL.md)
 
 ## 📋 Содержание
 
