@@ -1,4 +1,4 @@
-# Bitrix SortFix
+# DeadLarsen IblockSortFix
 
 🔧 **Professional module for fixing SORT field in 1C-Bitrix iblock elements**
 
@@ -9,10 +9,10 @@
 ## Quick Install
 
 ```bash
-composer require bitrix/sortfix
+composer require deadlarsen/iblocksortfix
 ```
 
-The module will be automatically installed to `local/modules/bitrix.sortfix/` and registered in your Bitrix system.
+The module will be automatically installed to `local/modules/deadlarsen.iblocksortfix/` and registered in your Bitrix system.
 
 ## Features
 
@@ -33,19 +33,19 @@ Go to Bitrix admin panel → **Settings → Sort Fix**
 ### CLI Commands
 ```bash
 # Check current state
-php local/modules/bitrix.sortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 
 # Create backup  
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup
 
 # Fix with automatic backup
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
 ```
 
 ### Programmatic Usage
 ```php
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 if (Loader::includeModule('bitrix.sortfix')) {
     $service = new SortFixService();
@@ -71,16 +71,16 @@ if (Loader::includeModule('bitrix.sortfix')) {
 
 ## Documentation
 
-- **Full Documentation**: [README.md](https://github.com/bitrix-community/sortfix/blob/main/README.md)
-- **Installation Guide**: [INSTALL.md](https://github.com/bitrix-community/sortfix/blob/main/INSTALL.md)  
-- **Usage Examples**: [EXAMPLES.md](https://github.com/bitrix-community/sortfix/blob/main/EXAMPLES.md)
-- **Changelog**: [CHANGELOG.md](https://github.com/bitrix-community/sortfix/blob/main/CHANGELOG.md)
+- **Full Documentation**: [README.md](https://github.com/deadlarsen/iblocksortfix/blob/main/README.md)
+- **Installation Guide**: [INSTALL.md](https://github.com/deadlarsen/iblocksortfix/blob/main/INSTALL.md)  
+- **Usage Examples**: [EXAMPLES.md](https://github.com/deadlarsen/iblocksortfix/blob/main/EXAMPLES.md)
+- **Changelog**: [CHANGELOG.md](https://github.com/deadlarsen/iblocksortfix/blob/main/CHANGELOG.md)
 
 ## Support
 
-- 🐛 **Issues**: [GitHub Issues](https://github.com/bitrix-community/sortfix/issues)
-- 📖 **Documentation**: [GitHub Repository](https://github.com/bitrix-community/sortfix)
-- 💬 **Community**: [Discussions](https://github.com/bitrix-community/sortfix/discussions)
+- 🐛 **Issues**: [GitHub Issues](https://github.com/deadlarsen/iblocksortfix/issues)
+- 📖 **Documentation**: [GitHub Repository](https://github.com/deadlarsen/iblocksortfix)
+- 💬 **Community**: [Discussions](https://github.com/deadlarsen/iblocksortfix/discussions)
 
 ---
 

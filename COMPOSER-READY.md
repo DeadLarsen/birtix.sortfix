@@ -1,16 +1,16 @@
 # ✅ Модуль готов к публикации через Composer!
 
-Модуль bitrix/sortfix полностью подготовлен для публикации на Packagist.
+Модуль deadlarsen/iblocksortfix полностью подготовлен для публикации на Packagist.
 
 ## Установка для пользователей
 
 ```bash
-composer require bitrix/sortfix
+composer require deadlarsen/iblocksortfix
 ```
 
 ## Автоматическая установка
 
-- Файлы копируются в local/modules/bitrix.sortfix/
+- Файлы копируются в local/modules/deadlarsen.iblocksortfix/
 - Модуль автоматически регистрируется в Bitrix
 - Настраивается PSR-4 автозагрузка
 

@@ -1,17 +1,16 @@
-# Bitrix SortFix - Модуль исправления сортировки для 1C-Bitrix
+# DeadLarsen IblockSortFix - Модуль исправления сортировки для 1C-Bitrix
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![PHP Version](https://img.shields.io/badge/PHP-7.4%2B-blue.svg)](https://www.php.net)
 [![1C-Bitrix](https://img.shields.io/badge/1C--Bitrix-Compatible-green.svg)](https://www.1c-bitrix.ru)
-[![Packagist Version](https://img.shields.io/packagist/v/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
+[![Packagist Version](https://img.shields.io/packagist/v/deadlarsen/iblocksortfix)](https://packagist.org/packages/deadlarsen/iblocksortfix)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/deadlarsen/iblocksortfix)](https://packagist.org/packages/deadlarsen/iblocksortfix)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
 
 🔧 **Профессиональный модуль для исправления поля SORT в элементах инфоблоков 1C-Bitrix**
 
-Работает пока только с инфоблоками 1.0
 
-Модуль `bitrix.sortfix` предназначен для исправления поля SORT в таблице `b_iblock_element` в системе 1C-Bitrix с помощью эффективного алгоритма с шагом 100.
+Модуль `deadlarsen.iblocksortfix` предназначен для исправления поля SORT в таблице `b_iblock_element` в системе 1C-Bitrix с помощью эффективного алгоритма с шагом 100.
 
 ## ✨ Особенности
 
@@ -30,14 +29,14 @@
 ~~### Установка через Composer (рекомендуется)~~
 
 ```bash
-composer require bitrix/sortfix
+composer require deadlarsen/iblocksortfix
 ```
 
-Модуль автоматически будет установлен в `local/modules/bitrix.sortfix/` и зарегистрирован в системе.
+Модуль автоматически будет установлен в `local/modules/deadlarsen.iblocksortfix/` и зарегистрирован в системе.
 
 ### Ручная установка
 
-1. Скачайте модуль в `local/modules/bitrix.sortfix/`
+1. Скачайте модуль в `local/modules/deadlarsen.iblocksortfix/`
 2. Установите через админ-панель или выполните миграцию
 3. Откройте **Настройки → Исправление сортировки**
 
@@ -82,7 +81,7 @@ composer require bitrix/sortfix
 
 ### 1. Установка модуля
 
-Модуль уже размещен в директории `local/modules/bitrix.sortfix/`.
+Модуль уже размещен в директории `local/modules/deadlarsen.iblocksortfix/`.
 
 Для установки выполните:
 
@@ -134,72 +133,72 @@ class install_bitrix_sortfix_module
 
 ### Через командную строку
 
-CLI-скрипт находится в `local/modules/bitrix.sortfix/cli/sort_fix.php`
+CLI-скрипт находится в `local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php`
 
 #### Показать статистику:
 ```bash
 cd /path/to/bitrix/root
-php local/modules/bitrix.sortfix/cli/sort_fix.php stats
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
 ```
 
 #### Проверить необходимость исправления:
 ```bash
 # Проверить все инфоблоки с детальной информацией
-php local/modules/bitrix.sortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 
 # Проверить конкретный инфоблок
-php local/modules/bitrix.sortfix/cli/sort_fix.php check 384
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check 384
 ```
 
 #### Исправить сортировку всех элементов:
 ```bash
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix
 ```
 
 #### Исправить сортировку конкретного инфоблока:
 ```bash
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix 384
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix 384
 ```
 
 #### Управление бекапами:
 
 ```bash
 # Создать бекап всей таблицы
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup
 
 # Создать бекап конкретного инфоблока
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup 384
 
 # Создать именованный бекап
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384 my_backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup 384 my_backup
 
 # Показать список бекапов
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup-list
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup-list
 
 # Восстановить из бекапа (всю таблицу)
-php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php restore backup_name
 
 # Восстановить из бекапа (только конкретный инфоблок)
-php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name 384
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php restore backup_name 384
 
 # Удалить бекап
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup-delete backup_name
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup-delete backup_name
 
 # Исправить сортировку с созданием бекапа
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix 384 --backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix 384 --backup
 ```
 
 #### Показать справку:
 ```bash
-php local/modules/bitrix.sortfix/cli/sort_fix.php help
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php help
 ```
 
 ### Программное использование
 
 ```php
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 if (Loader::includeModule('bitrix.sortfix')) {
     $sortFixService = new SortFixService();
@@ -247,7 +246,7 @@ if (Loader::includeModule('bitrix.sortfix')) {
 ## 📁 Структура модуля
 
 ```
-local/modules/bitrix.sortfix/
+local/modules/deadlarsen.iblocksortfix/
 ├── admin/
 │   ├── menu.php                 # Добавление пункта в админ-меню
 │   └── sort_fix.php            # Административная страница
@@ -275,27 +274,27 @@ local/modules/bitrix.sortfix/
 
 ```bash
 # Проверяем текущее состояние
-php local/modules/bitrix.sortfix/cli/sort_fix.php stats
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
 
 # Проверяем нужно ли исправление
-php local/modules/bitrix.sortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 
 # Если нужно исправление, запускаем
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix
 ```
 
 ### Пример 2: Автоматизация через cron
 
 ```bash
 # Добавить в crontab для еженедельной проверки и исправления
-0 2 * * 0 cd /var/www/html && php local/modules/bitrix.sortfix/cli/sort_fix.php fix > /var/log/sort_fix.log 2>&1
+0 2 * * 0 cd /var/www/html && php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix > /var/log/sort_fix.log 2>&1
 ```
 
 ### Пример 3: Использование в коде
 
 ```php
 // В обработчике события или в компоненте
-$sortFixService = new \Bitrix\SortFix\Services\SortFixService();
+$sortFixService = new \DeadLarsen\IblockSortFix\Services\SortFixService();
 
 // Проверяем инфоблок новостей (ID = 392)
 $check = $sortFixService->checkSortNeedsFixing(392);
@@ -341,8 +340,8 @@ if ($check['needs_fixing']) {
 ### 🆘 Получить помощь
 
 - 📖 Изучите [документацию](README.md)
-- 🐛 [Создайте issue](https://github.com/bitrix/sortfix/issues) для багов
-- 💬 [Обсуждения](https://github.com/bitrix/sortfix/discussions) для вопросов
+- 🐛 [Создайте issue](https://github.com/deadlarsen/iblocksortfix/issues) для багов
+- 💬 [Обсуждения](https://github.com/deadlarsen/iblocksortfix/discussions) для вопросов
 - 📧 Email: community@bitrix.ru
 
 ### 🔍 Диагностика
@@ -369,7 +368,7 @@ ModuleManager::unRegisterModule('bitrix.sortfix');
 
 **⭐ Понравился проект? Поставьте звезду!**
 
-**💝 Спасибо за использование Bitrix SortFix!**
+**💝 Спасибо за использование DeadLarsen IblockSortFix!**
 
 Made with ❤️ by [Bitrix Community](https://github.com/bitrix)
 

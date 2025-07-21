@@ -8,11 +8,11 @@ $_SERVER["DOCUMENT_ROOT"] = realpath(__DIR__ . "/../../../../");
 require_once $_SERVER["DOCUMENT_ROOT"] . "/bitrix/modules/main/include/prolog_before.php";
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 // Подключаем модуль
-if (!Loader::includeModule('bitrix.sortfix')) {
-    echo "Ошибка: Модуль bitrix.sortfix не установлен\n";
+if (!Loader::includeModule('deadlarsen.iblocksortfix')) {
+    echo "Ошибка: Модуль deadlarsen.iblocksortfix не установлен\n";
     exit(1);
 }
 

@@ -1,6 +1,6 @@
-# Примеры использования Bitrix SortFix
+# Примеры использования DeadLarsen IblockSortFix
 
-В этом документе представлены практические примеры использования модуля Bitrix SortFix для различных сценариев.
+В этом документе представлены практические примеры использования модуля DeadLarsen IblockSortFix для различных сценариев.
 
 ## 📋 Оглавление
 
@@ -17,10 +17,10 @@
 
 ```bash
 # Получить общую статистику
-php local/modules/bitrix.sortfix/cli/sort_fix.php stats
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
 
 # Проверить, есть ли проблемы с сортировкой
-php local/modules/bitrix.sortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 ```
 
 **Пример вывода:**
@@ -40,10 +40,10 @@ ID    Название               Код               Элементов Min
 
 ```bash
 # Проверить конкретный инфоблок
-php local/modules/bitrix.sortfix/cli/sort_fix.php check 3
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check 3
 
 # Исправить сортировку
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix 3
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix 3
 ```
 
 ## Работа с бекапами
@@ -52,16 +52,16 @@ echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix 3
 
 ```bash
 # Создать бекап всей таблицы
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup
 
 # Создать бекап конкретного инфоблока
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup 384
 
 # Создать именованный бекап для важных изменений
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup 384 before_migration
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup 384 before_migration
 
 # Просмотр всех доступных бекапов
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup-list
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup-list
 ```
 
 **Пример вывода списка бекапов:**
@@ -78,27 +78,27 @@ b_iblock_element_backup_before_migration     890     23.45     2024-01-15 10:30:
 
 ```bash
 # Исправить все элементы с автоматическим созданием бекапа
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
 
 # Исправить конкретный инфоблок с бекапом
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix 384 --backup
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix 384 --backup
 ```
 
 ### Восстановление данных
 
 ```bash
 # Восстановить всю таблицу из бекапа
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php restore backup_name
 
 # Восстановить только конкретный инфоблок
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php restore backup_name 384
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php restore backup_name 384
 ```
 
 ### Очистка старых бекапов
 
 ```bash
 # Удалить конкретный бекап
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php backup-delete old_backup_name
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup-delete old_backup_name
 ```
 
 ### Сценарий производственного обновления
@@ -108,13 +108,13 @@ echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php backup-delete old_b
 
 # Создаем бекап перед обновлением
 echo "Создание бекапа перед обновлением..."
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup "" "before_update_$(date +%Y%m%d_%H%M%S)"
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup "" "before_update_$(date +%Y%m%d_%H%M%S)"
 
 # Проверяем текущее состояние
-php local/modules/bitrix.sortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 
 # Выполняем исправление с подтверждением
-echo "y" | php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+echo "y" | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
 
 echo "Обновление завершено успешно!"
 ```
@@ -130,7 +130,7 @@ echo "Обновление завершено успешно!"
 
 # Путь к корню Bitrix
 BITRIX_ROOT="/var/www/html"
-CLI_SCRIPT="$BITRIX_ROOT/local/modules/bitrix.sortfix/cli/sort_fix.php"
+CLI_SCRIPT="$BITRIX_ROOT/local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
 LOG_FILE="/var/log/sortfix-maintenance.log"
 
 echo "=== SortFix Maintenance $(date) ===" >> $LOG_FILE
@@ -158,7 +158,7 @@ echo "=== Maintenance completed ===" >> $LOG_FILE
 0 3 * * * /path/to/maintenance.sh
 
 # Или только проверка состояния каждые 4 часа
-0 */4 * * * php /var/www/html/local/modules/bitrix.sortfix/cli/sort_fix.php check
+0 */4 * * * php /var/www/html/local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 ```
 
 ## Программное использование
@@ -170,7 +170,7 @@ echo "=== Maintenance completed ===" >> $LOG_FILE
 // В файле /local/php_interface/init.php
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 // Автоматическое исправление при добавлении новых элементов
 AddEventHandler("iblock", "OnAfterIBlockElementAdd", "checkAndFixSortOnAdd");
@@ -219,7 +219,7 @@ function checkAndFixSortOnAdd(&$arFields)
 // В компоненте админки
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 if (Loader::includeModule('bitrix.sortfix')) {
     $sortFixService = new SortFixService();
@@ -250,7 +250,7 @@ if (Loader::includeModule('bitrix.sortfix')) {
 
 use Bitrix\Main\Engine\Controller;
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 class SortFixController extends Controller
 {
@@ -287,7 +287,7 @@ class SortFixController extends Controller
 // Пример класса для управления бекапами
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 class SortFixBackupManager
 {
@@ -394,7 +394,7 @@ $backupManager->cleanupOldBackups(7); // удалить бекапы старш�
 # check_sortfix.sh - скрипт для мониторинга
 
 BITRIX_ROOT="/var/www/html"
-CLI_SCRIPT="$BITRIX_ROOT/local/modules/bitrix.sortfix/cli/sort_fix.php"
+CLI_SCRIPT="$BITRIX_ROOT/local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
 
 # Проверяем состояние
 OUTPUT=$(php $CLI_SCRIPT check 2>&1)
@@ -420,7 +420,7 @@ fi
 // Генерация еженедельного отчета
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 if (Loader::includeModule('bitrix.sortfix')) {
     $sortFixService = new SortFixService();
@@ -467,7 +467,7 @@ if (Loader::includeModule('bitrix.sortfix')) {
 # Скрипт для массовой миграции большого проекта
 
 BITRIX_ROOT="/var/www/html"
-CLI_SCRIPT="$BITRIX_ROOT/local/modules/bitrix.sortfix/cli/sort_fix.php"
+CLI_SCRIPT="$BITRIX_ROOT/local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
 BACKUP_DIR="/backup/sortfix"
 TIMESTAMP=$(date +%Y%m%d_%H%M%S)
 
@@ -526,11 +526,11 @@ jobs:
         
     - name: Run SortFix check
       run: |
-        ssh user@server "cd /var/www/html && php local/modules/bitrix.sortfix/cli/sort_fix.php check"
+        ssh user@server "cd /var/www/html && php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check"
         
     - name: Auto-fix if needed
       run: |
-        ssh user@server "cd /var/www/html && echo 'y' | php local/modules/bitrix.sortfix/cli/sort_fix.php fix"
+        ssh user@server "cd /var/www/html && echo 'y' | php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix"
 ```
 
 ### Мониторинг производительности
@@ -540,7 +540,7 @@ jobs:
 // Мониторинг времени выполнения операций
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 if (Loader::includeModule('bitrix.sortfix')) {
     $sortFixService = new SortFixService();

@@ -1,16 +1,16 @@
-# Установка модуля Bitrix SortFix
+# Установка модуля DeadLarsen IblockSortFix
 
-Модуль `bitrix/sortfix` можно установить несколькими способами в зависимости от ваших потребностей.
+Модуль `deadlarsen/iblocksortfix` можно установить несколькими способами в зависимости от ваших потребностей.
 
 ## 🚀 Установка через Composer (рекомендуется)
 
 ### Быстрая установка
 
 ```bash
-composer require bitrix/sortfix
+composer require deadlarsen/iblocksortfix
 ```
 
-После установки модуль автоматически будет скопирован в `local/modules/bitrix.sortfix/` и при возможности установлен в Bitrix.
+После установки модуль автоматически будет скопирован в `local/modules/deadlarsen.iblocksortfix/` и при возможности установлен в Bitrix.
 
 ### Ручная активация (если автоустановка не сработала)
 
@@ -26,7 +26,7 @@ composer require bitrix/sortfix
 
 3. **Через CLI:**
    ```bash
-   php local/modules/bitrix.sortfix/install/index.php
+   php local/modules/deadlarsen.iblocksortfix/install/index.php
    ```
 
 ## 📁 Ручная установка
@@ -35,12 +35,12 @@ composer require bitrix/sortfix
 
 ```bash
 # Клонирование репозитория
-git clone https://github.com/bitrix-community/sortfix.git local/modules/bitrix.sortfix
+git clone https://github.com/deadlarsen/iblocksortfix.git local/modules/deadlarsen.iblocksortfix
 
 # Или скачивание архива
-wget https://github.com/bitrix-community/sortfix/archive/main.zip
+wget https://github.com/deadlarsen/iblocksortfix/archive/main.zip
 unzip main.zip -d local/modules/
-mv local/modules/sortfix-main local/modules/bitrix.sortfix
+mv local/modules/sortfix-main local/modules/deadlarsen.iblocksortfix
 ```
 
 ### 2. Установка модуля
@@ -55,7 +55,7 @@ mv local/modules/sortfix-main local/modules/bitrix.sortfix
 **Способ 2: Через миграцию**
 ```bash
 # Скопируйте миграцию
-cp local/modules/bitrix.sortfix/database/migrations/20250129120000_install_bitrix_sortfix_module.php database/migrations/
+cp local/modules/deadlarsen.iblocksortfix/database/migrations/20250129120000_install_bitrix_sortfix_module.php database/migrations/
 
 # Выполните миграцию
 vendor/bin/phinx migrate
@@ -72,7 +72,7 @@ use Bitrix\Main\Loader;
 if (Loader::includeModule('bitrix.sortfix')) {
     echo "Module already installed\n";
 } else {
-    $installer = new Bitrix\SortFix\Install\Index();
+    $installer = new DeadLarsen\IblockSortFix\Install\Index();
     $installer->DoInstall();
     echo "Module installed\n";
 }
@@ -91,7 +91,7 @@ RUN composer install --no-dev --optimize-autoloader
 
 # Или ручная установка
 COPY . /var/www/html/
-RUN chown -R www-data:www-data /var/www/html/local/modules/bitrix.sortfix
+RUN chown -R www-data:www-data /var/www/html/local/modules/deadlarsen.iblocksortfix
 ```
 
 ### docker-compose.yml
@@ -102,13 +102,13 @@ services:
   bitrix:
     build: .
     volumes:
-      - ./local/modules/bitrix.sortfix:/var/www/html/local/modules/bitrix.sortfix
+      - ./local/modules/deadlarsen.iblocksortfix:/var/www/html/local/modules/deadlarsen.iblocksortfix
     environment:
       - COMPOSER_ALLOW_SUPERUSER=1
     command: |
       bash -c "
-        composer require bitrix/sortfix &&
-        php local/modules/bitrix.sortfix/cli/sort_fix.php stats
+        composer require deadlarsen/iblocksortfix &&
+        php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
       "
 ```
 
@@ -118,7 +118,7 @@ services:
 
 ```bash
 # Через CLI
-php local/modules/bitrix.sortfix/cli/sort_fix.php stats
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
 
 # Через веб-интерфейс
 # Перейдите в админ-панель → Настройки → Исправление сортировки
@@ -128,13 +128,13 @@ php local/modules/bitrix.sortfix/cli/sort_fix.php stats
 
 ```bash
 # Проверить состояние
-php local/modules/bitrix.sortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
 
 # Создать бекап
-php local/modules/bitrix.sortfix/cli/sort_fix.php backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup
 
 # Исправить сортировку с бекапом
-php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
 ```
 
 ## 🔧 Настройка автозагрузки (для Composer)
@@ -145,7 +145,7 @@ php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
 {
     "autoload": {
         "psr-4": {
-            "Bitrix\\SortFix\\": "vendor/bitrix/sortfix/lib/"
+            "DeadLarsen\\IblockSortFix\\": "vendor/deadlarsen/iblocksortfix/lib/"
         }
     }
 }
@@ -158,7 +158,7 @@ php local/modules/bitrix.sortfix/cli/sort_fix.php fix --backup
 **Решение:**
 ```bash
 # Проверьте права доступа
-chmod -R 755 local/modules/bitrix.sortfix/
+chmod -R 755 local/modules/deadlarsen.iblocksortfix/
 
 # Установите вручную через админ-панель
 # или выполните миграцию
@@ -173,7 +173,7 @@ which php
 
 # Проверьте DOCUMENT_ROOT
 cd /path/to/bitrix/root
-php local/modules/bitrix.sortfix/cli/sort_fix.php help
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php help
 ```
 
 ### Проблема: Нет доступа к админ-панели
@@ -181,7 +181,7 @@ php local/modules/bitrix.sortfix/cli/sort_fix.php help
 **Решение:**
 ```bash
 # Установите через CLI
-php -d register_argc_argv=On local/modules/bitrix.sortfix/install/index.php
+php -d register_argc_argv=On local/modules/deadlarsen.iblocksortfix/install/index.php
 
 # Или выполните миграцию
 vendor/bin/phinx migrate

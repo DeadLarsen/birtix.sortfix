@@ -3,7 +3,7 @@
 require_once($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_before.php");
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 // Проверяем права доступа
 if (!$USER->CanDoOperation('edit_other_settings')) {
@@ -11,9 +11,9 @@ if (!$USER->CanDoOperation('edit_other_settings')) {
 }
 
 // Подключаем модуль
-if (!Loader::includeModule('bitrix.sortfix')) {
+if (!Loader::includeModule('deadlarsen.iblocksortfix')) {
     require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_admin_after.php");
-    echo "Модуль bitrix.sortfix не установлен";
+    echo "Модуль deadlarsen.iblocksortfix не установлен";
     require($_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/epilog_admin.php");
     die();
 }

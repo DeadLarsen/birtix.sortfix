@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [1.0.0] - 2025-01-29
 
 ### Added
-- Initial release of Bitrix SortFix module
+- Initial release of DeadLarsen IblockSortFix module
 - Core service for fixing SORT field in `b_iblock_element` table
 - Web interface in Bitrix admin panel for managing sort fixes
 - CLI script for command-line operations

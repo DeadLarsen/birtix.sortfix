@@ -23,10 +23,10 @@ $aMenu = [
         "sort" => 550,
         "text" => "Исправление сортировки",
         "title" => "Исправление поля SORT в элементах инфоблоков",
-        "url" => "/local/modules/bitrix.sortfix/admin/sort_fix.php",
+        "url" => "/local/modules/deadlarsen.iblocksortfix/admin/sort_fix.php",
         "icon" => "iblock_menu_icon_types",
         "page_icon" => "iblock_page_icon_types",
-        "items_id" => "menu_bitrix_sortfix",
+        "items_id" => "menu_deadlarsen_iblocksortfix",
     ]
 ];
 

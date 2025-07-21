@@ -3,8 +3,8 @@
 use Bitrix\Main\Loader;
 
 // Автозагрузка классов модуля
-Loader::registerAutoLoadClasses('bitrix.sortfix', [
-    'Bitrix\\SortFix\\Services\\SortFixService' => 'lib/Services/SortFixService.php',
+Loader::registerAutoLoadClasses('deadlarsen.iblocksortfix', [
+    'DeadLarsen\\IblockSortFix\\Services\\SortFixService' => 'lib/Services/SortFixService.php',
 ]);
 
 // Добавляем пункт в административное меню

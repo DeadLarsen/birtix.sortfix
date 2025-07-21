@@ -1,6 +1,6 @@
-# Contributing to Bitrix SortFix
+# Contributing to DeadLarsen IblockSortFix
 
-First off, thank you for considering contributing to Bitrix SortFix! It's people like you that make this project a great tool for the 1C-Bitrix community.
+First off, thank you for considering contributing to DeadLarsen IblockSortFix! It's people like you that make this project a great tool for the 1C-Bitrix community.
 
 ## Code of Conduct
 

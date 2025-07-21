@@ -1,14 +1,14 @@
 <?php
 
-class bitrix_sortfix extends CModule
+class deadlarsen_iblocksortfix extends CModule
 {
     public function __construct()
     {
-        $this->MODULE_VERSION      = '1.0.0';
+        $this->MODULE_VERSION      = '1.1.0';
         $this->MODULE_VERSION_DATE = '2025-01-29';
 
-        $this->MODULE_ID           = 'bitrix.sortfix';
-        $this->MODULE_NAME         = 'Sort Fix';
+        $this->MODULE_ID           = 'deadlarsen.iblocksortfix';
+        $this->MODULE_NAME         = 'IBlock Sort Fix';
         $this->MODULE_DESCRIPTION  = 'Модуль для исправления поля SORT в элементах инфоблоков с шагом 100';
         $this->MODULE_GROUP_RIGHTS = 'N';
     }

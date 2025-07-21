@@ -1,6 +1,6 @@
 <?php
 
-namespace Bitrix\SortFix\Services;
+namespace DeadLarsen\IblockSortFix\Services;
 
 use Bitrix\Main\DB\Result;
 use Bitrix\Main\Application;

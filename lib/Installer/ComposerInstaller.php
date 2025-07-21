@@ -1,6 +1,6 @@
 <?php
 
-namespace Bitrix\SortFix\Installer;
+namespace DeadLarsen\IblockSortFix\Installer;
 
 use Composer\Script\Event;
 
@@ -20,8 +20,8 @@ class ComposerInstaller
         $projectRoot = dirname($vendorDir);
         
         // Определяем пути
-        $moduleSourcePath = $vendorDir . '/bitrix/sortfix';
-        $moduleTargetPath = $projectRoot . '/local/modules/bitrix.sortfix';
+        $moduleSourcePath = $vendorDir . '/deadlarsen/iblocksortfix';
+        $moduleTargetPath = $projectRoot . '/local/modules/deadlarsen.iblocksortfix';
         
         $io = $event->getIO();
         
@@ -29,7 +29,7 @@ class ComposerInstaller
             // Проверяем, что это Bitrix проект
             if (!self::isBitrixProject($projectRoot)) {
                 $io->write('<warning>Bitrix project structure not detected. Manual installation required.</warning>');
-                $io->write('<info>Please copy module files from vendor/bitrix/sortfix to local/modules/bitrix.sortfix/</info>');
+                $io->write('<info>Please copy module files from vendor/deadlarsen/iblocksortfix to local/modules/deadlarsen.iblocksortfix/</info>');
                 return;
             }
             
@@ -43,7 +43,7 @@ class ComposerInstaller
             // Копируем файлы модуля
             if (is_dir($moduleSourcePath)) {
                 self::copyRecursive($moduleSourcePath, $moduleTargetPath);
-                $io->write('<info>Bitrix SortFix module installed to local/modules/bitrix.sortfix/</info>');
+                $io->write('<info>DeadLarsen IblockSortFix module installed to local/modules/deadlarsen.iblocksortfix/</info>');
                 
                 // Пытаемся установить модуль автоматически
                 if (self::installModule($projectRoot, $io)) {
@@ -131,8 +131,8 @@ class ComposerInstaller
             }
             
             // Устанавливаем модуль
-            if (!\Bitrix\Main\ModuleManager::isModuleInstalled('bitrix.sortfix')) {
-                $moduleInstaller = new \Bitrix\SortFix\Install\Index();
+            if (!\Bitrix\Main\ModuleManager::isModuleInstalled('deadlarsen.iblocksortfix')) {
+                $moduleInstaller = new \DeadLarsen\IblockSortFix\Install\Index();
                 
                 if (method_exists($moduleInstaller, 'DoInstall')) {
                     $moduleInstaller->DoInstall();

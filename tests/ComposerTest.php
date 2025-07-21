@@ -1,10 +1,10 @@
 <?php
 
-namespace Bitrix\SortFix\Tests;
+namespace DeadLarsen\IblockSortFix\Tests;
 
 use PHPUnit\Framework\TestCase;
-use Bitrix\SortFix\Services\SortFixService;
-use Bitrix\SortFix\Installer\ComposerInstaller;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Installer\ComposerInstaller;
 
 /**
  * Тест для проверки корректной работы Composer автозагрузки

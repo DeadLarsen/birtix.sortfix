@@ -3,7 +3,7 @@
  * Пример использования модуля Bitrix SortFix после установки через Composer
  * 
  * Этот файл демонстрирует, как использовать модуль после установки командой:
- * composer require bitrix/sortfix
+ * composer require deadlarsen/iblocksortfix
  */
 
 // Подключаем автозагрузчик Composer
@@ -14,12 +14,12 @@ $_SERVER['DOCUMENT_ROOT'] = __DIR__;
 require_once $_SERVER['DOCUMENT_ROOT'] . '/bitrix/modules/main/include/prolog_before.php';
 
 use Bitrix\Main\Loader;
-use Bitrix\SortFix\Services\SortFixService;
+use DeadLarsen\IblockSortFix\Services\SortFixService;
 
 try {
     // Подключаем модуль
-    if (!Loader::includeModule('bitrix.sortfix')) {
-        throw new Exception('Module bitrix.sortfix not installed');
+    if (!Loader::includeModule('deadlarsen.iblocksortfix')) {
+        throw new Exception('Module deadlarsen.iblocksortfix not installed');
     }
     
     // Создаем экземпляр службы
@@ -85,7 +85,7 @@ try {
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage() . "\n";
     echo "\nMake sure:\n";
-    echo "1. Module is installed: composer require bitrix/sortfix\n";
+    echo "1. Module is installed: composer require deadlarsen/iblocksortfix\n";
     echo "2. Bitrix is properly configured\n";
     echo "3. Database connection is working\n";
 }

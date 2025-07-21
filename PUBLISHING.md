@@ -1,4 +1,4 @@
-# 🚀 Инструкции по публикации Bitrix SortFix на GitHub
+# 🚀 Инструкции по публикации DeadLarsen IblockSortFix на GitHub
 
 Этот документ содержит пошаговые инструкции для публикации модуля на GitHub и подготовки его к широкому использованию.
 
@@ -41,7 +41,7 @@
 
 ```bash
 # Перейти в директорию модуля
-cd local/modules/bitrix.sortfix
+cd local/modules/deadlarsen.iblocksortfix
 
 # Инициализация git репозитория
 git init
@@ -61,7 +61,7 @@ git commit -m "Initial release v1.0.0
 
 # Добавление remote origin
 git branch -M main
-git remote add origin https://github.com/bitrix/sortfix.git
+git remote add origin https://github.com/deadlarsen/iblocksortfix.git
 
 # Пуш в GitHub
 git push -u origin main
@@ -79,7 +79,7 @@ git push -u origin main
 ```markdown
 ## 🎉 Initial Release
 
-Первый официальный релиз модуля Bitrix SortFix для 1C-Bitrix!
+Первый официальный релиз модуля DeadLarsen IblockSortFix для 1C-Bitrix!
 
 ### ✨ Основные возможности
 
@@ -92,16 +92,16 @@ git push -u origin main
 ### 📦 Установка
 
 ```bash
-composer require bitrix/sortfix
+composer require deadlarsen/iblocksortfix
 ```
 
-Или скачайте и распакуйте в `local/modules/bitrix.sortfix/`
+Или скачайте и распакуйте в `local/modules/deadlarsen.iblocksortfix/`
 
 ### 🔧 Быстрый старт
 
 1. Установите модуль в админ-панели Bitrix
 2. Откройте **Настройки → Исправление сортировки**
-3. Или используйте CLI: `php local/modules/bitrix.sortfix/cli/sort_fix.php stats`
+3. Или используйте CLI: `php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats`
 
 ### 📚 Документация
 
@@ -132,7 +132,7 @@ composer require bitrix/sortfix
 ### 2. Добавление пакета
 
 1. Нажать "Submit" в верхнем меню
-2. Ввести URL репозитория: `https://github.com/bitrix/sortfix`
+2. Ввести URL репозитория: `https://github.com/deadlarsen/iblocksortfix`
 3. Нажать "Check"
 4. Если все ОК, нажать "Submit"
 
@@ -211,11 +211,11 @@ git push origin main --tags
 Добавить в README.md:
 
 ```markdown
-[![Packagist Version](https://img.shields.io/packagist/v/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
-[![GitHub Stars](https://img.shields.io/github/stars/bitrix/sortfix)](https://github.com/bitrix/sortfix/stargazers)
-[![GitHub Issues](https://img.shields.io/github/issues/bitrix/sortfix)](https://github.com/bitrix/sortfix/issues)
-[![GitHub CI](https://img.shields.io/github/workflow/status/bitrix/sortfix/CI)](https://github.com/bitrix/sortfix/actions)
+[![Packagist Version](https://img.shields.io/packagist/v/deadlarsen/iblocksortfix)](https://packagist.org/packages/deadlarsen/iblocksortfix)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/deadlarsen/iblocksortfix)](https://packagist.org/packages/deadlarsen/iblocksortfix)
+[![GitHub Stars](https://img.shields.io/github/stars/deadlarsen/iblocksortfix)](https://github.com/deadlarsen/iblocksortfix/stargazers)
+[![GitHub Issues](https://img.shields.io/github/issues/deadlarsen/iblocksortfix)](https://github.com/deadlarsen/iblocksortfix/issues)
+[![GitHub CI](https://img.shields.io/github/workflow/status/deadlarsen/iblocksortfix/CI)](https://github.com/deadlarsen/iblocksortfix/actions)
 ```
 
 ## 🎯 Продвижение проекта
@@ -320,10 +320,10 @@ mkdir test-install && cd test-install
 composer init --no-interaction
 
 # Установить пакет
-composer require bitrix/sortfix
+composer require deadlarsen/iblocksortfix
 
 # Проверить установку
-ls -la vendor/bitrix/sortfix/
+ls -la vendor/deadlarsen/iblocksortfix/
 ```
 
 ### 6. Обновление документации
@@ -335,8 +335,8 @@ ls -la vendor/bitrix/sortfix/
 - Создать пример установки в Docker
 
 ```markdown
-[![Packagist Version](https://img.shields.io/packagist/v/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
-[![Packagist Downloads](https://img.shields.io/packagist/dt/bitrix/sortfix)](https://packagist.org/packages/bitrix/sortfix)
+[![Packagist Version](https://img.shields.io/packagist/v/deadlarsen/iblocksortfix)](https://packagist.org/packages/deadlarsen/iblocksortfix)
+[![Packagist Downloads](https://img.shields.io/packagist/dt/deadlarsen/iblocksortfix)](https://packagist.org/packages/deadlarsen/iblocksortfix)
 ```
 
 ## 🔄 Автоматизация выпусков
@@ -418,4 +418,4 @@ composer dump-autoload --optimize
 
 **Готово к публикации! 🚀**
 
-Модуль готов к публикации на GitHub и Packagist. После выполнения всех шагов пользователи смогут устанавливать модуль простой командой `composer require bitrix/sortfix`. 
+Модуль готов к публикации на GitHub и Packagist. После выполнения всех шагов пользователи смогут устанавливать модуль простой командой `composer require deadlarsen/iblocksortfix`. 

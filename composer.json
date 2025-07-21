@@ -1,5 +1,5 @@
 {
-    "name": "bitrix/sortfix",
+    "name": "deadlarsen/iblocksortfix",
     "description": "1C-Bitrix module for fixing SORT field in iblock elements with 100-step algorithm",
     "type": "library",
     "keywords": [
@@ -14,14 +14,14 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Bitrix Community",
-            "email": "community@bitrix.ru",
+            "name": "DeadLarsen",
+            "email": "deadlarsen@example.com",
             "role": "Developer"
         }
     ],
     "support": {
-        "issues": "https://github.com/bitrix/sortfix/issues",
-        "source": "https://github.com/bitrix/sortfix"
+        "issues": "https://github.com/deadlarsen/iblocksortfix/issues",
+        "source": "https://github.com/deadlarsen/iblocksortfix"
     },
     "require": {
         "php": ">=7.4.0",
@@ -33,22 +33,22 @@
     },
     "autoload": {
         "psr-4": {
-            "Bitrix\\SortFix\\": "lib/"
+            "DeadLarsen\\IblockSortFix\\": "lib/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Bitrix\\SortFix\\Tests\\": "tests/"
+            "DeadLarsen\\IblockSortFix\\Tests\\": "tests/"
         }
     },
     "extra": {
         "bitrix-module": {
-            "name": "bitrix.sortfix",
-            "description": "Sort Fix Module",
+            "name": "deadlarsen.iblocksortfix",
+            "description": "IBlock Sort Fix Module",
             "version": "1.1.0"
         },
         "installer-paths": {
-            "local/modules/bitrix.sortfix/": ["bitrix/sortfix"]
+            "local/modules/deadlarsen.iblocksortfix/": ["deadlarsen/iblocksortfix"]
         }
     },
     "scripts": {
@@ -56,10 +56,10 @@
         "cs-check": "phpcs --standard=PSR12 lib/ cli/",
         "cs-fix": "phpcbf --standard=PSR12 lib/ cli/",
         "post-install-cmd": [
-            "Bitrix\\SortFix\\Installer\\ComposerInstaller::install"
+            "DeadLarsen\\IblockSortFix\\Installer\\ComposerInstaller::install"
         ],
         "post-update-cmd": [
-            "Bitrix\\SortFix\\Installer\\ComposerInstaller::install"
+            "DeadLarsen\\IblockSortFix\\Installer\\ComposerInstaller::install"
         ]
     },
     "config": {
