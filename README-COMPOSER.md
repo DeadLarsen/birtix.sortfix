@@ -14,6 +14,21 @@ composer require deadlarsen/iblocksortfix
 
 The module will be automatically installed to `local/modules/deadlarsen.iblocksortfix/` and registered in your Bitrix system.
 
+## Quick Start Commands
+
+After installation, run these commands to get started:
+
+```bash
+# Check current statistics
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
+
+# Check if fixing is needed
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
+
+# Create backup and fix sorting
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
+```
+
 ## Features
 
 - 🔧 **Automatic SORT field fixing** in `b_iblock_element` table

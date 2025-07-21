@@ -1,0 +1,25 @@
+{
+    "scripts": {
+        "sortfix:stats": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats",
+        "sortfix:check": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check",
+        "sortfix:backup": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup",
+        "sortfix:fix": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix",
+        "sortfix:fix-safe": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup",
+        "sortfix:backup-list": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup-list",
+        "sortfix:help": "php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php help",
+        "sortfix:quick": [
+            "@sortfix:check",
+            "@sortfix:fix-safe"
+        ]
+    },
+    "scripts-descriptions": {
+        "sortfix:stats": "Показать статистику элементов инфоблоков",
+        "sortfix:check": "Проверить необходимость исправления сортировки",
+        "sortfix:backup": "Создать бекап таблицы b_iblock_element",
+        "sortfix:fix": "Исправить сортировку элементов",
+        "sortfix:fix-safe": "Исправить сортировку с автоматическим бекапом",
+        "sortfix:backup-list": "Показать список созданных бекапов",
+        "sortfix:help": "Показать справку по всем командам",
+        "sortfix:quick": "Быстрая проверка и исправление с бекапом"
+    }
+} 

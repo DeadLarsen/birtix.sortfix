@@ -1,0 +1,234 @@
+# Bash aliases for DeadLarsen IblockSortFix module with auto-path detection
+# 
+# To use these aliases, add this file to your shell profile:
+# 
+# For bash:
+#   echo "source $(pwd)/local/modules/deadlarsen.iblocksortfix/.bash_aliases_sortfix" >> ~/.bashrc
+#   source ~/.bashrc
+#
+# For zsh:
+#   echo "source $(pwd)/local/modules/deadlarsen.iblocksortfix/.bash_aliases_sortfix" >> ~/.zshrc
+#   source ~/.zshrc
+
+# Load configuration if available
+if [ -f "sortfix.config" ]; then
+    source "sortfix.config"
+fi
+
+# Function to find module path for host environment
+_sortfix_find_host_path() {
+    # Check custom path first
+    if [ -n "$CUSTOM_HOST_PATH" ] && [ -f "$CUSTOM_HOST_PATH" ]; then
+        echo "$CUSTOM_HOST_PATH"
+        return 0
+    fi
+    
+    # Define paths
+    local paths=(
+        "vendor/deadlarsen/iblocksortfix/cli/sort_fix.php"
+        "local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
+        "bitrix/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
+    )
+    
+    # Override with config if available
+    if [ -n "$HOST_PATHS" ]; then
+        paths=("${HOST_PATHS[@]}")
+    fi
+    
+    # Try each path
+    for path in "${paths[@]}"; do
+        if [ -f "$path" ]; then
+            echo "$path"
+            return 0
+        fi
+    done
+    
+    echo "local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php" # fallback
+    return 1
+}
+
+# Function to find module path for Docker environment
+_sortfix_find_docker_path() {
+    # Check custom path first
+    if [ -n "$CUSTOM_DOCKER_PATH" ]; then
+        echo "$CUSTOM_DOCKER_PATH"
+        return 0
+    fi
+    
+    # Define paths
+    local paths=(
+        "html/vendor/deadlarsen/iblocksortfix/cli/sort_fix.php"
+        "html/local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
+        "html/bitrix/modules/deadlarsen.iblocksortfix/cli/sort_fix.php"
+    )
+    
+    # Override with config if available
+    if [ -n "$DOCKER_PATHS" ]; then
+        paths=("${DOCKER_PATHS[@]}")
+    fi
+    
+    # Return first path (we can't check file existence in docker from host)
+    echo "${paths[0]}"
+    return 0
+}
+
+# Get module paths
+SORTFIX_MODULE_PATH=$(_sortfix_find_host_path)
+SORTFIX_DOCKER_MODULE_PATH=$(_sortfix_find_docker_path)
+
+# Basic aliases
+alias sortfix-stats="php $SORTFIX_MODULE_PATH stats"
+alias sortfix-check="php $SORTFIX_MODULE_PATH check"
+alias sortfix-backup="php $SORTFIX_MODULE_PATH backup"
+alias sortfix-fix="php $SORTFIX_MODULE_PATH fix"
+alias sortfix-fix-safe="php $SORTFIX_MODULE_PATH fix --backup"
+alias sortfix-backup-list="php $SORTFIX_MODULE_PATH backup-list"
+alias sortfix-help="php $SORTFIX_MODULE_PATH help"
+
+# Quick command
+alias sortfix-quick="sortfix-check && sortfix-fix-safe"
+
+# Short aliases
+alias sfstats="sortfix-stats"
+alias sfcheck="sortfix-check"
+alias sfbackup="sortfix-backup"
+alias sffix="sortfix-fix-safe"
+alias sflist="sortfix-backup-list"
+alias sfhelp="sortfix-help"
+alias sfquick="sortfix-quick"
+
+# Docker aliases (requires setting SORTFIX_CONTAINER environment variable)
+alias sortfix-docker-stats="docker exec \${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}} php $SORTFIX_DOCKER_MODULE_PATH stats"
+alias sortfix-docker-check="docker exec \${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}} php $SORTFIX_DOCKER_MODULE_PATH check"
+alias sortfix-docker-fix="echo 'y' | docker exec -i \${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}} php $SORTFIX_DOCKER_MODULE_PATH fix --backup"
+alias sortfix-docker-backup="docker exec \${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}} php $SORTFIX_DOCKER_MODULE_PATH backup"
+alias sortfix-docker-list="docker exec \${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}} php $SORTFIX_DOCKER_MODULE_PATH backup-list"
+
+# Docker short aliases
+alias sfdstats="sortfix-docker-stats"
+alias sfdcheck="sortfix-docker-check"
+alias sfdfix="sortfix-docker-fix"
+alias sfdbackup="sortfix-docker-backup"
+alias sfdlist="sortfix-docker-list"
+
+# Functions for advanced usage
+sortfix-check-iblock() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please specify iblock ID"
+        echo "Usage: sortfix-check-iblock <iblock_id>"
+        return 1
+    fi
+    php "$SORTFIX_MODULE_PATH" check "$1"
+}
+
+sortfix-fix-iblock() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please specify iblock ID"
+        echo "Usage: sortfix-fix-iblock <iblock_id>"
+        return 1
+    fi
+    php "$SORTFIX_MODULE_PATH" fix "$1" --backup
+}
+
+sortfix-restore() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please specify backup name"
+        echo "Usage: sortfix-restore <backup_name> [iblock_id]"
+        return 1
+    fi
+    php "$SORTFIX_MODULE_PATH" restore "$@"
+}
+
+sortfix-backup-delete() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please specify backup name"
+        echo "Usage: sortfix-backup-delete <backup_name>"
+        return 1
+    fi
+    php "$SORTFIX_MODULE_PATH" backup-delete "$1"
+}
+
+# Docker functions
+sortfix-docker-check-iblock() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please specify iblock ID"
+        echo "Usage: sortfix-docker-check-iblock <iblock_id>"
+        return 1
+    fi
+    docker exec "${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}}" php "$SORTFIX_DOCKER_MODULE_PATH" check "$1"
+}
+
+sortfix-docker-fix-iblock() {
+    if [ -z "$1" ]; then
+        echo "❌ Error: Please specify iblock ID"
+        echo "Usage: sortfix-docker-fix-iblock <iblock_id>"
+        return 1
+    fi
+    echo "y" | docker exec -i "${SORTFIX_CONTAINER:-${DEFAULT_CONTAINER:-php_container}}" php "$SORTFIX_DOCKER_MODULE_PATH" fix "$1" --backup
+}
+
+# Help function
+sortfix-aliases-help() {
+    echo "🚀 DeadLarsen IblockSortFix - Available Aliases"
+    echo ""
+    echo "📍 Module paths detected:"
+    echo "   Host: $SORTFIX_MODULE_PATH"
+    echo "   Docker: $SORTFIX_DOCKER_MODULE_PATH"
+    echo ""
+    echo "Basic commands:"
+    echo "  sortfix-stats          - Show statistics"
+    echo "  sortfix-check          - Check if fixing needed"
+    echo "  sortfix-backup         - Create backup"
+    echo "  sortfix-fix-safe       - Fix with backup"
+    echo "  sortfix-quick          - Quick check and fix"
+    echo ""
+    echo "Short aliases:"
+    echo "  sfstats, sfcheck, sfbackup, sffix, sfquick"
+    echo ""
+    echo "Docker commands (set SORTFIX_CONTAINER env var):"
+    echo "  sortfix-docker-stats   - Docker stats"
+    echo "  sortfix-docker-check   - Docker check"
+    echo "  sortfix-docker-fix     - Docker fix"
+    echo "  sfdstats, sfdcheck, sfdfix - Docker short aliases"
+    echo ""
+    echo "Functions:"
+    echo "  sortfix-check-iblock <id>      - Check specific iblock"
+    echo "  sortfix-fix-iblock <id>        - Fix specific iblock"
+    echo "  sortfix-restore <backup>       - Restore from backup"
+    echo "  sortfix-backup-delete <backup> - Delete backup"
+    echo ""
+    echo "Environment variables:"
+    echo "  SORTFIX_CONTAINER - Docker container name (default: ${DEFAULT_CONTAINER:-php_container})"
+    echo ""
+    echo "Configuration:"
+    echo "  Edit sortfix.config to customize paths"
+    echo "  CUSTOM_HOST_PATH - Override host module path"
+    echo "  CUSTOM_DOCKER_PATH - Override docker module path"
+    echo ""
+    echo "Installation:"
+    echo "  echo 'source \$(pwd)/local/modules/deadlarsen.iblocksortfix/.bash_aliases_sortfix' >> ~/.bashrc"
+    echo "  source ~/.bashrc"
+}
+
+# Completion for iblock IDs (basic example)
+_sortfix_complete_iblock_ids() {
+    local cur prev
+    COMPREPLY=()
+    cur="${COMP_WORDS[COMP_CWORD]}"
+    prev="${COMP_WORDS[COMP_CWORD-1]}"
+    
+    # You can extend this to actually fetch iblock IDs from the database
+    local iblock_ids="384 388 390 391 392 396 398 399 400 401 402 406 408"
+    COMPREPLY=( $(compgen -W "${iblock_ids}" -- ${cur}) )
+}
+
+# Enable completion for functions
+complete -F _sortfix_complete_iblock_ids sortfix-check-iblock
+complete -F _sortfix_complete_iblock_ids sortfix-fix-iblock
+complete -F _sortfix_complete_iblock_ids sortfix-docker-check-iblock
+complete -F _sortfix_complete_iblock_ids sortfix-docker-fix-iblock
+
+echo "✅ SortFix aliases loaded with auto-path detection!"
+echo "📍 Host path: $SORTFIX_MODULE_PATH"
+echo "📍 Docker path: $SORTFIX_DOCKER_MODULE_PATH"
+echo "Type 'sortfix-aliases-help' for help." 

@@ -12,6 +12,40 @@ composer require deadlarsen/iblocksortfix
 
 После установки модуль автоматически будет скопирован в `local/modules/deadlarsen.iblocksortfix/` и при возможности установлен в Bitrix.
 
+### 🚀 Первый запуск после установки
+
+После успешной установки через Composer выполните команды для начала работы:
+
+```bash
+# В корне вашего Bitrix проекта:
+
+# 1. Просмотрите текущую статистику
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
+
+# 2. Проверьте состояние сортировки
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
+
+# 3. При необходимости создайте бекап
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php backup
+
+# 4. Исправьте сортировку (с подтверждением)
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
+
+# 5. Проверьте результат
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
+```
+
+### 🐳 Команды для Docker окружения
+
+Если ваш проект запущен в Docker:
+
+```bash
+# Замените container_name на имя вашего PHP контейнера
+docker exec container_name php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
+docker exec container_name php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
+echo "y" | docker exec -i container_name php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
+```
+
 ### Ручная активация (если автоустановка не сработала)
 
 1. **Через админ-панель:**

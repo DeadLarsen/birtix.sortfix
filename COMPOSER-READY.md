@@ -14,6 +14,15 @@ composer require deadlarsen/iblocksortfix
 - Модуль автоматически регистрируется в Bitrix
 - Настраивается PSR-4 автозагрузка
 
+## Команды после установки
+
+```bash
+# Базовые команды для начала работы:
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php stats
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php check
+php local/modules/deadlarsen.iblocksortfix/cli/sort_fix.php fix --backup
+```
+
 ## Готовые компоненты
 
 ✅ composer.json с корректными метаданными
