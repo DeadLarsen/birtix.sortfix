@@ -369,7 +369,6 @@ if ($check['needs_fixing']) {
 - 📖 Изучите [документацию](README.md)
 - 🐛 [Создайте issue](https://github.com/deadlarsen/iblocksortfix/issues) для багов
 - 💬 [Обсуждения](https://github.com/deadlarsen/iblocksortfix/discussions) для вопросов
-- 📧 Email: community@bitrix.ru
 
 ### 🔍 Диагностика
 
